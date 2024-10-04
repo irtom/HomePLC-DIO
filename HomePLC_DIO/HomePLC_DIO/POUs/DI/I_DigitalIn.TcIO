@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <Itf Name="I_DigitalIn" Id="{06edd45f-18e1-43ff-80cf-171eac0b135b}">
+    <Declaration><![CDATA[// Digital input interface
+INTERFACE I_DigitalIn EXTENDS I_DIO]]></Declaration>
+    <Folder Name="Methods" Id="{02ee0932-3142-4cb2-99b8-e2fc2d5ec01c}" />
+    <Folder Name="Properties" Id="{1f08de7b-5c62-4d16-86b5-ed262b4ec3bb}" />
+    <Property Name="Command" Id="{552f62ea-4e10-41a1-ae78-91323927dd23}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the digital input command = translation from on duration of input
+PROPERTY Command : E_DICommand]]></Declaration>
+      <Get Name="Get" Id="{f723779f-d1e4-49ed-9421-a5960d5727bc}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="EnableDefer" Id="{623b8565-8ac7-4114-894d-0a4ac62de63d}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Enable/disable deferring right after input
+METHOD EnableDefer
+VAR_INPUT
+	bEnable		: BOOL;		// Set to true to enable deferring right after input
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="EnableDoublePress" Id="{8a847cca-5662-44f2-9c81-1120c268e34c}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Enable/disable double press detection
+METHOD EnableDoublePress
+VAR_INPUT
+	bEnable		: BOOL;		// Set to true to enable double press detection
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="HmiData" Id="{fd1ef5fd-1060-49c4-81e2-7225187109a3}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get HMI data
+PROPERTY HmiData : ST_HmiDigitalIn]]></Declaration>
+      <Get Name="Get" Id="{e90f16e0-7a49-4152-b19f-02e0eebcb3c2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="SetExternalIn" Id="{96712700-1cab-4334-8d25-9716a5a406a3}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set the external input
+METHOD SetExternalIn
+VAR_INPUT
+	bIn		: BOOL;		// External input value
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="State" Id="{15315a60-9a40-4bbf-8d66-3642ca2733f1}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the digital input state
+PROPERTY State : E_DIState]]></Declaration>
+      <Get Name="Get" Id="{10b42085-bd25-43b0-94b0-9d60896fc885}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

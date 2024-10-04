@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="ST_HmiDigitalIn" Id="{fbb8040d-14d5-47db-9962-37e3d775379f}">
+    <Declaration><![CDATA[TYPE ST_HmiDigitalIn :
+STRUCT
+	sName	: STRING;
+	eState	: E_DIState;
+	bValue	: BOOL;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

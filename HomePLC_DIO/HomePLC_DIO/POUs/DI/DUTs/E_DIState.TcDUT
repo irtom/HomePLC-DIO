@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="E_DIState" Id="{fd1345a7-7706-4016-a536-b9d1c1f36dec}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+// Digital input state
+TYPE E_DIState :
+(
+	Idle			:= 0,		// No input action
+	Pressing1		:= 1,		// Input is being pressed for the first time for a short amount of time
+	LongPressing	:= 2,		// Input is being pressed longer
+	Pressing2		:= 3,		// Input is being pressed for the second time
+	Holding			:= 4,		// Input is being held
+	Deferring		:= 5
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

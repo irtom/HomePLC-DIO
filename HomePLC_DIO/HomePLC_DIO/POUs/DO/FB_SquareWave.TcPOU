@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_SquareWave" Id="{a4a642af-02d5-4cd3-bf05-19ed23282f75}" SpecialFunc="None">
+    <Declaration><![CDATA[// Generates a boolean square wave with the given period
+FUNCTION_BLOCK FB_SquareWave
+VAR_INPUT
+	tPeriod			: TIME;			// Period of the square wave
+END_VAR
+VAR_OUTPUT
+	bSquareWave		: BOOL;			// Output square wave
+END_VAR
+VAR
+	fbTimerOn		: TON;			// Timer FB
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Run FB
+fbTimerOn();
+
+IF fbTimerOn.Q THEN
+	// Timer elapsed
+	// Reset timer
+	fbTimerOn.IN := FALSE;
+	
+	// Toggle output
+	bSquareWave := NOT bSquareWave;
+ELSE
+	// Timer running
+	// Set period
+	fbTimerOn.PT := tPeriod / 2;
+	
+	// Enable timer
+	fbTimerOn.IN := TRUE;	
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_SquareWave">
+      <LineId Id="27" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <Itf Name="I_DIO" Id="{f1581428-788b-4a2e-a426-fff7782cd4db}">
+    <Declaration><![CDATA[// Interface for digital IO
+INTERFACE I_DIO]]></Declaration>
+    <Folder Name="Methods" Id="{9cc62082-6678-4dc2-8906-2fc64b040f55}" />
+    <Folder Name="Properties" Id="{2285bdb0-d2fe-445c-88c0-8c1800a2bf09}" />
+    <Method Name="Execute" Id="{19c37d63-a0b5-41d5-9859-121985fbaeb0}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Run this method every cycle
+METHOD ABSTRACT Execute]]></Declaration>
+    </Method>
+    <Property Name="Name" Id="{3753ce80-58b9-481d-bd97-aa8e15fad4a9}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the name of the IO
+PROPERTY Name : STRING]]></Declaration>
+      <Get Name="Get" Id="{d3a00ebc-7e08-44c2-a232-f3d21957063e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

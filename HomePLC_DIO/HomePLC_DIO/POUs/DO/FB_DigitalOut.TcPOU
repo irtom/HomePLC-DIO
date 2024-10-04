@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DigitalOut" Id="{b35e412e-e9e8-4ab6-9166-d5ebb85f5884}" SpecialFunc="None">
+    <Declaration><![CDATA[// Digital output FB
+FUNCTION_BLOCK FB_DigitalOut EXTENDS FB_DIO IMPLEMENTS I_DigitalOut
+VAR
+	obOut		AT %Q*	: BOOL;								// Linked output variable
+	eCommand			: E_DOCommand := E_DOCommand.None;	// Command received by digital output
+	eState				: E_DOState	:= E_DOState.Idle;		// State of the digital output
+	tBlinkPeriod		: TIME := T#2S;						// Square wave period when blinking
+	tFlashTime			: TIME := T#2s;						// Time to toggle output when flashing
+END_VAR
+VAR RETAIN
+	nSwitchCount		: UDINT;						// Counter for the number of times the input has switched (0-4294967295)
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{fd57294d-b22b-4b48-9c70-35554cf8bddd}" />
+    <Folder Name="Properties" Id="{d843abcd-0e9e-44d2-8a40-30e1f4591b74}" />
+    <Property Name="BlinkPeriod" Id="{d30d495d-45e2-4229-a638-97ee0f670a3b}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Returns the blinking period
+PROPERTY BlinkPeriod : TIME]]></Declaration>
+      <Get Name="Get" Id="{473ef06b-afaf-46eb-83c6-0f97258a5543}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BlinkPeriod := tBlinkPeriod;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Command" Id="{ad05d6f0-03fd-40cc-be94-7ba10c9b72d2}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the command issued to the digital output
+PROPERTY Command : E_DOCommand]]></Declaration>
+      <Get Name="Get" Id="{cb5ec0da-2500-49a3-85f2-cec48dffd54b}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Command := eCommand;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Execute" Id="{acc0a333-4bb0-4e2d-b2d9-43ae1aeb724a}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Run this method every cycle
+METHOD Execute
+VAR_INST
+	eFlashStep			: E_DOFlashStep;		// Step when flashing
+	fbSquareWave		: FB_SquareWave;		// Square wave generator FB
+	fbFlashTimer		: TON;					// Flash timer FB
+	bOutPrevious		: BOOL;					// Previous output value
+	bBlinking			: BOOL;					// True if blinking
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Execute command
+CASE eCommand OF
+	E_DOCommand.None:	// Do nothing
+	E_DOCommand.On:		eState := E_DOState.TurnOn;
+	E_DOCommand.Off:	eState := E_DOState.TurnOff;
+	E_DOCommand.Toggle:	eState := E_DOState.Toggle;
+	E_DOCommand.Blink:	eState := E_DOState.Blinking;
+	E_DOCommand.Flash:	eState := E_DOState.Flashing;
+END_CASE
+
+// Execute state
+CASE eState OF
+	E_DOState.Idle:
+		// Do nothing
+		bBlinking := FALSE;
+	
+	E_DOState.TurnOn:
+		// Turn output on
+		IF obOut THEN
+			// Already on, nothing to do
+		ELSE
+			obOut := TRUE;
+			
+			nSwitchCount := nSwitchCount + 1;
+			
+			fbLogger.AddDebug(TO_STRING(eCommand));
+		END_IF
+		
+		eState := E_DOState.Idle;
+		
+	E_DOState.TurnOff:
+		// Turn output off
+		IF obOut THEN
+			obOut := FALSE;
+			
+			nSwitchCount := nSwitchCount + 1;
+			
+			fbLogger.AddDebug(TO_STRING(eCommand));
+		ELSE
+			// Already off, nothing to do
+		END_IF
+		
+		eState := E_DOState.Idle;
+		
+	E_DOState.Toggle:
+		// Toggle output
+		obOut := NOT obOut;
+		
+		nSwitchCount := nSwitchCount + 1;
+		
+		fbLogger.AddDebug(TO_STRING(eCommand));
+		
+		eState := E_DOState.Idle;
+		
+	E_DOState.Blinking:
+		// Blink
+		fbSquareWave(tPeriod := tBlinkPeriod, bSquareWave => obOut);
+		
+		IF obOut <> bOutPrevious THEN
+			nSwitchCount := nSwitchCount + 1;
+		END_IF
+		
+		bOutPrevious := obOut;
+		
+		IF eCommand <> E_DOCommand.None AND NOT bBlinking THEN
+			fbLogger.AddDebug(TO_STRING(eCommand));
+		END_IF
+		
+		bBlinking := TRUE;
+		
+	E_DOState.Flashing:
+		// Flash once
+		CASE eFlashStep OF
+			E_DOFlashStep.Start:
+				// Reset timer FB
+				fbFlashTimer(IN := FALSE);
+				
+				eFlashStep := E_DOFlashStep.ToggleOutput;
+				
+			E_DOFlashStep.ToggleOutput:
+				// Toggle output
+				// Flash = turn on if already off, turn off if already on
+				obOut := NOT obOut;
+				
+				nSwitchCount := nSwitchCount + 1;
+				
+				eFlashStep := E_DOFlashStep.WaitForTimer;
+				
+			E_DOFlashStep.WaitForTimer:
+				// Wait for timer
+				fbFlashTimer(IN := TRUE, PT := tFlashTime);
+				
+				IF fbFlashTimer.Q THEN
+					eFlashStep := E_DOFlashStep.RestoreOutput;
+				END_IF
+				
+			E_DOFlashStep.RestoreOutput:
+				// Restore output
+				obOut := NOT obOut;
+				
+				nSwitchCount := nSwitchCount + 1;
+				
+				eFlashStep := E_DOFlashStep.End;
+				
+			E_DOFlashStep.End:
+				// Reset
+				eState := E_DOState.Idle;
+				eFlashStep := E_DOFlashStep.Start;
+		END_CASE
+		
+		IF eCommand <> E_DOCommand.None THEN
+			fbLogger.AddDebug(TO_STRING(eCommand));
+		END_IF
+		
+END_CASE
+
+// Reset command
+eCommand := E_DOCommand.None;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FlashTime" Id="{b749b4db-b700-45aa-bb48-3a3cd436affa}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Returns the flash time
+PROPERTY FlashTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{ec801c58-aecc-470d-ae31-07982bee2e88}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FlashTime := tFlashTime;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="HmiData" Id="{449edecb-a8b0-4103-9b2e-9c4885eb3ba3}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get HMI data
+PROPERTY HmiData : ST_HmiDigitalOut]]></Declaration>
+      <Get Name="Get" Id="{00921dad-3c6b-43c0-8d74-4b59645454a6}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[HmiData.sName := sName;
+HmiData.eState := eState;
+HmiData.bValue := obOut;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="SetBlinkPeriod" Id="{e22ef653-e151-48f0-be86-6f845c7b9a84}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set the square wave period when blinking (default 2s)
+METHOD SetBlinkPeriod
+VAR_INPUT
+	tPeriod		: TIME;			// Blink period
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[tBlinkPeriod := tPeriod;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetCommand" Id="{cb5c389a-0996-427d-ac00-33ffd772358b}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set digital output command
+METHOD SetCommand
+VAR_INPUT
+	eCommandIn		: E_DOCommand;	// Command
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[eCommand := eCommandIn;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetFlashTime" Id="{8d1e46ea-0b38-4ff9-9b69-4c4d37ad22bd}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set the time to toggle the output when flashing (default 2s)
+METHOD SetFlashTime
+VAR_INPUT
+	tTime		: TIME;			// Flash time
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[tFlashTime := tTime;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="State" Id="{133b50f2-b313-40dd-a893-5ecaf720f841}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the digital output state
+PROPERTY State : E_DOState]]></Declaration>
+      <Get Name="Get" Id="{923a5a00-f017-49cd-a547-71e0903232ef}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := eState;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_DigitalOut">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.BlinkPeriod.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.Command.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.Execute">
+      <LineId Id="129" Count="2" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="299" Count="0" />
+      <LineId Id="258" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="346" Count="0" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="286" Count="1" />
+      <LineId Id="289" Count="1" />
+      <LineId Id="319" Count="1" />
+      <LineId Id="291" Count="1" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="260" Count="0" />
+      <LineId Id="211" Count="2" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="261" Count="0" />
+      <LineId Id="321" Count="1" />
+      <LineId Id="294" Count="4" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="214" Count="3" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="323" Count="1" />
+      <LineId Id="303" Count="1" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="218" Count="4" />
+      <LineId Id="326" Count="5" />
+      <LineId Id="305" Count="3" />
+      <LineId Id="344" Count="1" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="226" Count="11" />
+      <LineId Id="332" Count="1" />
+      <LineId Id="238" Count="13" />
+      <LineId Id="334" Count="1" />
+      <LineId Id="252" Count="4" />
+      <LineId Id="265" Count="0" />
+      <LineId Id="257" Count="0" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="309" Count="0" />
+      <LineId Id="311" Count="1" />
+      <LineId Id="310" Count="0" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="203" Count="0" />
+      <LineId Id="301" Count="1" />
+      <LineId Id="300" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.FlashTime.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.HmiData.Get">
+      <LineId Id="5" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.SetBlinkPeriod">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.SetCommand">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.SetFlashTime">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DigitalOut.State.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

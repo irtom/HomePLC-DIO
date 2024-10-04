@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_DigitalOut" Id="{cf107e87-cae7-441e-b181-1e390d075020}">
+    <Declaration><![CDATA[// Digital output interface
+INTERFACE I_DigitalOut EXTENDS I_DIO]]></Declaration>
+    <Folder Name="Methods" Id="{c9efb76e-7a74-4d7c-8a84-00d77b8d4848}" />
+    <Folder Name="Properties" Id="{23ef8473-f8ea-49f3-bab8-e3e7b7970758}" />
+    <Property Name="BlinkPeriod" Id="{1bc11fdd-6b92-463a-98c1-4da471c4d7a0}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Returns the blinking period
+PROPERTY BlinkPeriod : TIME]]></Declaration>
+      <Get Name="Get" Id="{dd3ced2b-a83f-4528-9f9f-bc0ff7f263cf}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Command" Id="{aec988b8-6d95-4cc4-9c6c-5d8817e4adac}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the command issued to the digital output
+PROPERTY Command : E_DOCommand]]></Declaration>
+      <Get Name="Get" Id="{75ef1f63-adfa-4658-bc09-37eb2bb99450}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="FlashTime" Id="{721f5d0d-a5c6-48d4-96ad-09a937b1da6f}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Returns the flash time
+PROPERTY FlashTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{c9add764-0bf7-48b2-9684-7ecc5438e950}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="HmiData" Id="{a7db2afb-0f4e-4e64-8fd5-b37821d84e96}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get HMI data
+PROPERTY HmiData : ST_HmiDigitalOut]]></Declaration>
+      <Get Name="Get" Id="{295e0afa-6f74-4b5e-a336-5ed745c05fd7}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="SetBlinkPeriod" Id="{b6226cba-f933-4d83-bd14-6c57f5441b9a}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set the square wave period when blinking (default 2s)
+METHOD SetBlinkPeriod
+VAR_INPUT
+	tPeriod		: TIME;			// Blink period
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="SetCommand" Id="{4df4f8c7-9458-4f8d-92e5-f547dafec721}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set digital output command
+METHOD SetCommand
+VAR_INPUT
+	eCommandIn		: E_DOCommand;		// Command
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="SetFlashTime" Id="{b7750966-a6db-4aa4-b9d9-f203c11bb7a4}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Set the time to toggle the output when flashing (default 2s)
+METHOD SetFlashTime
+VAR_INPUT
+	tTime		: TIME;			// Flash time
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="State" Id="{a6795d43-60ae-433b-b885-aa638e2a8062}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the digital output state
+PROPERTY State : E_DOState]]></Declaration>
+      <Get Name="Get" Id="{1aea6945-a74a-4ebb-8a26-cd7085efddbb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

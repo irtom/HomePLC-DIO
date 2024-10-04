@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="E_DOCommand" Id="{1646fefd-f00a-4f6a-ae4c-5e664467dcb7}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+// Digital output command (received by digital output)
+TYPE E_DOCommand :
+(
+	None		:= 0,		// No command given
+	On			:= 1,		// Turn on
+	Off			:= 2,		// Turn off
+	Toggle		:= 3,		// Toggle
+	Blink		:= 4,		// Blink continuously
+	Flash		:= 5		// Flash once (either flash on when already off or flash off when already on)
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

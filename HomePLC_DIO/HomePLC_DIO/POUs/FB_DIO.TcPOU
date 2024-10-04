@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_DIO" Id="{a13a298d-d596-45ba-b107-3849f0ce76a2}" SpecialFunc="None">
+    <Declaration><![CDATA[// Digital IO abstract FB
+{attribute 'reflection'} 
+FUNCTION_BLOCK ABSTRACT FB_DIO
+VAR
+	fbLogger	: class_Tc3EventLogger;			// Logging FB
+
+	// Use attributes to copy instance name to sName
+	{attribute 'instance-path'} 
+    {attribute 'noinit'} 
+    sName		: STRING; 						// Instance name
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{af3d7696-68f0-4c4a-ab9d-bd6083b227d3}" />
+    <Folder Name="Properties" Id="{4889219a-8c62-4b29-b204-2cdd81597cba}" />
+    <Method Name="Execute" Id="{53d87d6c-2fd8-4787-aad8-d9d0b8f4dab5}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Run this method every cycle
+METHOD ABSTRACT Execute]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{1d71fdac-8313-4a97-b6c2-392d5f4e66c0}" FolderPath="Methods\">
+      <Declaration><![CDATA[// Perform initialization (implicit call)
+METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Init logger
+fbLogger.Init(sSource := sName, bEnableVerbose := TRUE);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Name" Id="{f5e14834-09f9-46e3-ae92-769253468162}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the name of the IO
+PROPERTY Name : STRING]]></Declaration>
+      <Get Name="Get" Id="{364c4db9-50d4-4475-aac7-79549fd7c816}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Name := sName;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_DIO">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DIO.Execute">
+      <LineId Id="49" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DIO.FB_init">
+      <LineId Id="13" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DIO.Name.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

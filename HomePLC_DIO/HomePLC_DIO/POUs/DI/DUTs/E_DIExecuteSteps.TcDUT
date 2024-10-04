@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="E_DIExecuteSteps" Id="{c5745b46-e233-4699-bb6f-8160475ae7bc}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+// Digital input state machine steps
+TYPE E_DIExecuteSteps :
+(
+	Idle					:= 0,
+	FirstShortPressDetected	:= 1,
+	WaitForSecondPress		:= 2,
+	ShortPressDetected		:= 3,
+	DoublePressDetected		:= 4,
+	LongPressDetected		:= 5,
+	HoldDetected			:= 6,
+	WaitUntilReleased		:= 7,
+	Reset					:= 8
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="E_DOFlashStep" Id="{ca66d1db-6372-4b75-b7bf-115d0ba74a04}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+// Steps when flashing
+TYPE E_DOFlashStep :
+(
+	Start					:= 0,
+	ToggleOutput			:= 1,
+	WaitForTimer			:= 2,
+	RestoreOutput			:= 3,
+	End						:= 4
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>
