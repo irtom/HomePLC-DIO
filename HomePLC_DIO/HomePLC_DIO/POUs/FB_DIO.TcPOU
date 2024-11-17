@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_DIO" Id="{a13a298d-d596-45ba-b107-3849f0ce76a2}" SpecialFunc="None">
     <Declaration><![CDATA[// Digital IO abstract FB
 {attribute 'reflection'} 
@@ -46,18 +46,5 @@ PROPERTY Name : STRING]]></Declaration>
         </Implementation>
       </Get>
     </Property>
-    <LineIds Name="FB_DIO">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DIO.Execute">
-      <LineId Id="49" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DIO.FB_init">
-      <LineId Id="13" Count="0" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DIO.Name.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
