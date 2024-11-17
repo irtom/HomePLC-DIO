@@ -3,7 +3,7 @@
   <POU Name="FB_DIO" Id="{a13a298d-d596-45ba-b107-3849f0ce76a2}" SpecialFunc="None">
     <Declaration><![CDATA[// Digital IO abstract FB
 {attribute 'reflection'} 
-FUNCTION_BLOCK ABSTRACT FB_DIO
+FUNCTION_BLOCK ABSTRACT FB_DIO IMPLEMENTS I_DIO
 VAR
 	fbLogger	: class_Tc3EventLogger;			// Logging FB
 

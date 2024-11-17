@@ -19,7 +19,7 @@
     <Company>Tom Oyen</Company>
     <Released>false</Released>
     <Title>HomePLC DIO</Title>
-    <ProjectVersion>1.0.1</ProjectVersion>
+    <ProjectVersion>1.0.2</ProjectVersion>
     <PreserveCompiledLibComments>true</PreserveCompiledLibComments>
     <DefaultNamespace>
     </DefaultNamespace>

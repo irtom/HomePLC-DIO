@@ -19,6 +19,13 @@ PROPERTY Command : E_DOCommand]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Property Name="DirectControl" Id="{6b8d967a-0d66-4223-bc69-b45f8a29e9e1}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Set the direct control value
+PROPERTY DirectControl : BOOL]]></Declaration>
+      <Set Name="Set" Id="{48c4bdcb-84d3-40b5-a73b-4751b7c90a28}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
     <Property Name="FlashTime" Id="{721f5d0d-a5c6-48d4-96ad-09a937b1da6f}" FolderPath="Properties\">
       <Declaration><![CDATA[// Returns the flash time
 PROPERTY FlashTime : TIME]]></Declaration>
@@ -55,9 +62,16 @@ VAR_INPUT
 END_VAR]]></Declaration>
     </Method>
     <Property Name="State" Id="{a6795d43-60ae-433b-b885-aa638e2a8062}" FolderPath="Properties\">
-      <Declaration><![CDATA[// Get the digital output state
+      <Declaration><![CDATA[// Get the digital output state (enum)
 PROPERTY State : E_DOState]]></Declaration>
       <Get Name="Get" Id="{1aea6945-a74a-4ebb-8a26-cd7085efddbb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Value" Id="{432140b8-af35-4b76-a181-da322f7077fa}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get the digital output boolean value
+PROPERTY Value : BOOL]]></Declaration>
+      <Get Name="Get" Id="{06fd0cad-e0e7-40b1-b6fd-3596ec1f088e}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
