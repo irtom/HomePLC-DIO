@@ -19,13 +19,6 @@ PROPERTY Command : E_DOCommand]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Property Name="DirectControl" Id="{6b8d967a-0d66-4223-bc69-b45f8a29e9e1}" FolderPath="Properties\">
-      <Declaration><![CDATA[// Set the direct control value
-PROPERTY DirectControl : BOOL]]></Declaration>
-      <Set Name="Set" Id="{48c4bdcb-84d3-40b5-a73b-4751b7c90a28}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
     <Property Name="FlashTime" Id="{721f5d0d-a5c6-48d4-96ad-09a937b1da6f}" FolderPath="Properties\">
       <Declaration><![CDATA[// Returns the flash time
 PROPERTY FlashTime : TIME]]></Declaration>
@@ -39,6 +32,16 @@ PROPERTY HmiData : ST_HmiDigitalOut]]></Declaration>
       <Get Name="Get" Id="{295e0afa-6f74-4b5e-a336-5ed745c05fd7}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
+    </Property>
+    <Property Name="Output" Id="{2f2b254f-e86b-419f-87bf-68f0813e51b7}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get or set the digital output boolean value directly
+PROPERTY Output : BOOL]]></Declaration>
+      <Get Name="Get" Id="{7da983ff-d9b4-492c-b6d5-2ffdef52b5af}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{e353d4f0-93e1-4386-af31-2e4b100753cc}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
     </Property>
     <Method Name="SetBlinkPeriod" Id="{b6226cba-f933-4d83-bd14-6c57f5441b9a}" FolderPath="Methods\">
       <Declaration><![CDATA[// Set the square wave period when blinking (default 2s)
@@ -65,13 +68,6 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[// Get the digital output state (enum)
 PROPERTY State : E_DOState]]></Declaration>
       <Get Name="Get" Id="{1aea6945-a74a-4ebb-8a26-cd7085efddbb}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-    </Property>
-    <Property Name="Value" Id="{432140b8-af35-4b76-a181-da322f7077fa}" FolderPath="Properties\">
-      <Declaration><![CDATA[// Get the digital output boolean value
-PROPERTY Value : BOOL]]></Declaration>
-      <Get Name="Get" Id="{06fd0cad-e0e7-40b1-b6fd-3596ec1f088e}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>

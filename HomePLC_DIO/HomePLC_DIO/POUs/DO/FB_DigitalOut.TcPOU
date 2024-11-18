@@ -4,7 +4,6 @@
     <Declaration><![CDATA[// Digital output FB
 FUNCTION_BLOCK FB_DigitalOut EXTENDS FB_DIO IMPLEMENTS I_DigitalOut
 VAR
-	ibDirectControl	AT %I*	: BOOL;								// Linked input variable
 	obOut			AT %Q*	: BOOL;								// Linked output variable
 	eCommand				: E_DOCommand := E_DOCommand.None;	// Command received by digital output
 	eState					: E_DOState	:= E_DOState.Idle;		// State of the digital output
@@ -39,21 +38,10 @@ PROPERTY Command : E_DOCommand]]></Declaration>
         </Implementation>
       </Get>
     </Property>
-    <Property Name="DirectControl" Id="{9a4318fa-8a46-4b15-bf88-2397f48b231b}" FolderPath="Properties\">
-      <Declaration><![CDATA[// Set the direct control value
-PROPERTY DirectControl : BOOL]]></Declaration>
-      <Set Name="Set" Id="{4ff3a8ac-3d99-4bd2-93c3-e586a361bc70}">
-        <Declaration><![CDATA[]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[ibDirectControl := DirectControl;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
     <Method Name="Execute" Id="{acc0a333-4bb0-4e2d-b2d9-43ae1aeb724a}" FolderPath="Methods\">
       <Declaration><![CDATA[// Run this method every cycle
 METHOD Execute
 VAR_INST
-	bDirectControlPrevious	: BOOL;					// Previous direct control value
 	eFlashStep				: E_DOFlashStep;		// Step when flashing
 	fbSquareWave			: FB_SquareWave;		// Square wave generator FB
 	fbFlashTimer			: TON;					// Flash timer FB
@@ -77,13 +65,11 @@ CASE eState OF
 		// Reset variable
 		bBlinking := FALSE;
 		
-		// Follow direct control		
-		IF ibDirectControl <> bDirectControlPrevious THEN
-			obOut := ibDirectControl;
-			
+		// Check if output was changed externally		
+		IF obOut <> bOutPrevious THEN
 			nSwitchCount := nSwitchCount + 1;
 			
-			bDirectControlPrevious := ibDirectControl;
+			bOutPrevious := obOut;
 		END_IF
 	
 	E_DOState.TurnOn:
@@ -212,6 +198,22 @@ HmiData.bValue := obOut;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="Output" Id="{a76407f9-3e84-4be9-ab25-472ebdb1fbd0}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Get or set the digital output boolean value directly
+PROPERTY Output : BOOL]]></Declaration>
+      <Get Name="Get" Id="{cf7390ab-a2d9-4024-86f3-1225fe27594a}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Output := obOut;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{57c6a3e1-1778-49c2-8078-8e575d36b992}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[obOut := Output;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Method Name="SetBlinkPeriod" Id="{e22ef653-e151-48f0-be86-6f845c7b9a84}" FolderPath="Methods\">
       <Declaration><![CDATA[// Set the square wave period when blinking (default 2s)
 METHOD SetBlinkPeriod
@@ -249,16 +251,6 @@ PROPERTY State : E_DOState]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
           <ST><![CDATA[State := eState;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Property Name="Value" Id="{a76407f9-3e84-4be9-ab25-472ebdb1fbd0}" FolderPath="Properties\">
-      <Declaration><![CDATA[// Get the digital output boolean value
-PROPERTY Value : BOOL]]></Declaration>
-      <Get Name="Get" Id="{cf7390ab-a2d9-4024-86f3-1225fe27594a}">
-        <Declaration><![CDATA[]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[Value := obOut;]]></ST>
         </Implementation>
       </Get>
     </Property>
