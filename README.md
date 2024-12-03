@@ -26,3 +26,6 @@ Since the library is used for home automation the digital inputs are meant to be
    - Can turn a digital output on/off, toggle it, make it blink continuously and let it flash once (on if off, off if on)
 
 All digital in- and output switches are counted and stored in retain memory. The counter also works for digital outputs when it is manipulated externally (e.g. through ADS)
+
+## Example usage
+See the [example repository](https://github.com/irtom/HomePLC-Example).
